@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poste de Vaubrun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noir:#0c0e0d; --tole:#161a19; --tole2:#1e2422; --trait:#33403c;
+  --encre:#e8f0ec; --terne:#7e918a;
+  --vert:#37e07d; --ambre:#ffb52e; --rouge:#ff4d43;
+  --titre:"Oswald",sans-serif; --mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#050706;font-family:var(--mono);color:var(--encre);
+  display:flex;justify-content:center;min-height:100vh;-webkit-tap-highlight-color:transparent}
+.phone{width:100%;max-width:412px;background:var(--noir);min-height:100vh;position:relative;
+  display:flex;flex-direction:column}
+
+.top{padding:12px 16px;background:var(--tole);border-bottom:2px solid var(--trait);
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+h1{font-family:var(--titre);font-weight:600;text-transform:uppercase;font-size:18px;margin:0;letter-spacing:.06em}
+.top .h{font-family:var(--titre);font-size:23px;color:var(--ambre);letter-spacing:.04em}
+.aide{border:1px solid var(--trait);background:transparent;color:var(--terne);
+  width:26px;height:26px;flex:none;cursor:pointer;font-family:var(--mono)}
+.sous{padding:6px 16px;background:var(--tole2);border-bottom:1px solid var(--trait);
+  display:flex;justify-content:space-between;font-size:11px;color:var(--terne);letter-spacing:.06em}
+.sous b{font-weight:400}
+.sous b.ok{color:var(--vert)} .sous b.ko{color:var(--rouge)}
+
+.panneau{background:#080b0a;border-bottom:1px solid var(--trait);padding:10px 6px}
+svg{display:block;width:100%;height:auto}
+.legende{display:flex;gap:12px;justify-content:center;padding:7px 8px 10px;background:#080b0a;
+  font-size:9px;letter-spacing:.06em;color:var(--terne);border-bottom:1px solid var(--trait);flex-wrap:wrap}
+.legende i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+.sect{font-family:var(--titre);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--terne);padding:12px 16px 6px;display:flex;justify-content:space-between}
+.tr{display:grid;grid-template-columns:48px 1fr 62px;gap:8px;align-items:center;
+  padding:9px 16px;border-bottom:1px solid #1d2422;font-size:12.5px;cursor:pointer}
+.tr.sel{background:#132420;border-left:3px solid var(--vert);padding-left:13px}
+.tr .no{font-family:var(--titre);font-size:16px;color:var(--ambre);letter-spacing:.03em}
+.tr .de{overflow:hidden}
+.tr .de small{display:block;color:var(--terne);font-size:11px}
+.tr .et{text-align:right;font-size:11px;color:var(--terne)}
+.tr .et.r{color:var(--rouge)}
+.tr .et.v{color:var(--vert)}
+.tr.urgent{background:#1d1210}
+.vide{padding:12px 16px;font-size:12px;color:var(--terne)}
+
+.dest{padding:10px 16px 0}
+.dtitre{font-family:var(--titre);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--terne);margin-bottom:8px}
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.bt{border:1px solid var(--trait);background:var(--tole2);padding:11px 10px;text-align:left;
+  color:var(--encre);font-family:var(--mono);font-size:12px;cursor:pointer}
+.bt b{display:block;font-family:var(--titre);font-size:13px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--vert);margin-bottom:2px}
+.bt[disabled]{opacity:.32;cursor:default}
+.bt[disabled] b{color:var(--terne)}
+.bt.occupe b{color:var(--rouge)}
+
+.msg{margin:12px 16px 0;border-left:3px solid var(--ambre);background:#201a0d;padding:9px 11px;
+  font-size:12.5px;line-height:1.45;min-height:18px}
+.msg.ko{border-color:var(--rouge);background:#1e1210}
+.msg.ok{border-color:var(--vert);background:#0f2119}
+.msg b{color:var(--encre)}
+
+.foot{margin-top:auto;padding:14px 16px 22px}
+.foot button{width:100%;border:0;background:var(--vert);color:#062012;padding:14px;
+  font-family:var(--titre);font-weight:600;font-size:14px;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer}
+.foot .sec{background:transparent;border:1px solid var(--trait);color:var(--terne);margin-top:8px}
+.score{display:flex;gap:7px;margin-top:12px}
+.score div{flex:1;border:1px solid var(--trait);padding:7px;text-align:center}
+.score b{display:block;font-family:var(--titre);font-size:17px;color:var(--ambre)}
+.score span{font-size:8px;letter-spacing:.06em;color:var(--terne)}
+
+.modal{position:absolute;inset:0;background:rgba(12,14,13,.97);z-index:50;display:none;
+  padding:24px 20px;overflow-y:auto}
+.modal.on{display:block}
+.modal h2{font-family:var(--titre);font-size:19px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.06em}
+.modal h3{font-family:var(--titre);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--vert);margin:16px 0 6px}
+.modal p{font-size:12.5px;line-height:1.55;color:#bcccc6;margin:0 0 9px}
+.modal .k{color:var(--ambre)}
+.modal button{width:100%;background:var(--vert);color:#062012;border:0;padding:14px;margin-top:12px;
+  font-family:var(--titre);font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="top">
+    <h1>Poste de Vaubrun</h1>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="aide" id="aide">?</button>
+      <span class="h" id="horloge">07:00</span>
+    </div>
+  </div>
+  <div class="sous">
+    <span id="service"></span>
+    <span>RETARD <b id="retard">0'</b> · PASSÉS <b id="passes">0</b></span>
+  </div>
+
+  <div class="panneau"><div id="plan"></div></div>
+  <div class="legende">
+    <span><i style="background:#37e07d"></i>itinéraire tracé</span>
+    <span><i style="background:#ff4d43"></i>canton occupé</span>
+    <span><i style="background:#ffb52e"></i>en attente</span>
+  </div>
+
+  <div class="sect"><span>Mouvements</span><span id="nbtrains"></span></div>
+  <div id="trains"></div>
+
+  <div class="dest">
+    <div class="dtitre" id="dtitre">Destination</div>
+    <div class="grille" id="dests"></div>
+  </div>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="foot">
+    <button id="pause">Pause</button>
+    <button class="sec" id="rejouer">Nouveau service</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <div class="modal" id="modal">
+    <h2>Le poste</h2>
+    <p>Des trains arrivent par l'ouest et par l'est. À toi de leur donner une destination avant qu'ils n'atteignent le signal d'entrée.</p>
+    <h3>Tracer</h3>
+    <p>Touche un train, puis une destination. L'itinéraire réserve des <span class="k">cantons</span> : tant qu'un train les occupe, un autre ne peut pas les traverser. Les boutons rouges sont les destinations dont la route est déjà prise.</p>
+    <h3>Les trains</h3>
+    <p><span class="k">Omnibus</span> : n'importe quel quai, s'arrête deux minutes. <span class="k">Direct</span> : traverse sans s'arrêter, ne veut pas de quai — et il est prioritaire. <span class="k">Fret</span> : lent, seulement le garage ou la voie d'évitement.</p>
+    <h3>Le retard</h3>
+    <p>Un train sans itinéraire attend au signal et accumule du retard. Trois trains bloqués en même temps, ou vingt-cinq minutes de retard cumulé, et le service est déclaré en incident.</p>
+    <button id="fermer">Prise de service</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+var $=function(s){return document.querySelector(s);};
+
+/* topologie : cantons partagés entre itinéraires */
+var DESTS=[
+  {id:"Q1", nom:"Quai 1", y:36,  cantons:["ouest","aig1","q1"],  type:["omnibus"]},
+  {id:"Q2", nom:"Quai 2", y:76,  cantons:["ouest","aig1","q2"],  type:["omnibus"]},
+  {id:"Q3", nom:"Quai 3", y:116, cantons:["aig2","q3"],          type:["omnibus"]},
+  {id:"GAR",nom:"Garage", y:156, cantons:["aig2","gar"],         type:["fret"]},
+  {id:"TR", nom:"Traversée", y:76,cantons:["ouest","aig1","aig2"],type:["direct"]}
+];
+var TYPES={
+  omnibus:{lib:"Omnibus",arret:15,couleur:"#e8f0ec"},
+  direct: {lib:"Direct", arret:0, couleur:"#ff4d43"},
+  fret:   {lib:"Fret",   arret:24,couleur:"#ffb52e"}
+};
+var VILLES=["Ferrières","Hauteville","Brennes","Serac","Peyrat","Longueil"];
+
+var G=null;
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+
+function nouveauService(){
+  G={t:0, horloge:7*60, trains:[], cantons:{}, sel:null, retard:0, passes:0,
+     prochain:0, numero:800, pause:false, fini:false, msg:"", msgType:"",
+     bloques:0, service:1};
+  G.msg="Prise de service. Touche un train, puis sa destination.";
+  rend();
+}
+
+function libre(cantons){
+  for(var i=0;i<cantons.length;i++) if(G.cantons[cantons[i]]) return false;
+  return true;
+}
+function occuper(cantons,num){ cantons.forEach(function(c){ G.cantons[c]=num; }); }
+function liberer(num){ Object.keys(G.cantons).forEach(function(c){ if(G.cantons[c]===num) delete G.cantons[c]; }); }
+
+function nouveauTrain(){
+  var r=Math.random();
+  var type=r<.62?"omnibus":r<.82?"fret":"direct";
+  G.numero+=ri(3,17);
+  G.trains.push({
+    num:G.numero, type:type, ville:VILLES[ri(0,VILLES.length-1)],
+    etat:"approche", x:0, dest:null, attente:0, arret:0, sorti:false,
+    voie:ri(0,1)
+  });
+}
+
+function tick(){
+  if(G.pause||G.fini)return;
+  G.t++;
+  G.horloge+=0.5;
+
+  var cadence=Math.max(24,100-G.service*8);
+  if(G.t>=G.prochain){
+    G.prochain=G.t+ri(cadence-12,cadence+18);
+    if(G.trains.filter(function(t){return !t.sorti;}).length<6) nouveauTrain();
+  }
+
+  var bloques=0;
+  G.trains.forEach(function(t){
+    if(t.sorti)return;
+    if(t.etat==="approche"){
+      t.x+=3;
+      if(t.x>=100){ t.x=100; t.etat=t.dest?"engage":"signal"; }
+    }else if(t.etat==="signal"){
+      t.attente++; bloques++;
+      if(t.attente%6===0) G.retard+=1;
+      if(t.dest) t.etat="engage";
+    }else if(t.etat==="engage"){
+      t.x+=t.type==="fret"?2.6:4;
+      if(t.x>=190){
+        t.etat=t.type==="direct"?"sortie":"quai";
+        t.arret=TYPES[t.type].arret;
+        /* l'itinéraire d'entrée est libéré derrière le train : seul le quai reste pris */
+        if(t.dest&&t.etat==="quai"){
+          var garde=t.dest.cantons[t.dest.cantons.length-1];
+          Object.keys(G.cantons).forEach(function(c){
+            if(G.cantons[c]===t.num&&c!==garde) delete G.cantons[c];
+          });
+        }
+      }
+    }else if(t.etat==="quai"){
+      t.arret--;
+      if(t.arret<=0) t.etat="sortie";
+    }else if(t.etat==="sortie"){
+      t.x+=5;
+      if(t.x>=300){
+        t.sorti=true; G.passes++;
+        liberer(t.num);
+      }
+    }
+  });
+  G.bloques=bloques;
+
+  if(bloques>=3){ G.fini=true; G.msgType="ko"; G.msg="Incident : trois trains bloqués au signal en même temps. Le poste est débordé."; }
+  if(G.retard>=25){ G.fini=true; G.msgType="ko"; G.msg="Incident : vingt-cinq minutes de retard cumulé. La régulation reprend la main."; }
+  var niveau=1+Math.floor(G.passes/8);
+  if(niveau>G.service){ G.service=niveau; G.msgType="ok";
+    G.msg="Renfort de trafic : la cadence passe au service "+niveau+"."; }
+  rend();
+}
+
+function assigner(destId){
+  var t=G.trains.filter(function(x){return x.num===G.sel;})[0];
+  if(!t||t.sorti||G.fini)return;
+  var d=DESTS.filter(function(x){return x.id===destId;})[0];
+  if(d.type.indexOf(t.type)<0){
+    G.msgType="ko"; G.msg="Le "+t.num+" est un "+TYPES[t.type].lib.toLowerCase()+" : cette destination ne lui convient pas.";
+    rend(); return;
+  }
+  if(!libre(d.cantons)){
+    G.msgType="ko"; G.msg="Itinéraire refusé : un canton est déjà pris par un autre mouvement.";
+    rend(); return;
+  }
+  occuper(d.cantons,t.num);
+  t.dest=d;
+  if(t.etat==="signal") t.etat="engage";
+  G.msgType="ok";
+  G.msg="Itinéraire tracé : "+t.num+" → "+d.nom+".";
+  G.sel=null;
+  rend();
+}
+
+/* ---------- rendu ---------- */
+function planSVG(){
+  var s='<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">';
+  var voies=[36,76,116,156];
+  voies.forEach(function(y){
+    s+='<line x1="0" y1="'+y+'" x2="380" y2="'+y+'" stroke="#2a3733" stroke-width="4"/>';
+  });
+  s+='<path d="M96 36 L136 76" stroke="#2a3733" stroke-width="4" fill="none"/>';
+  s+='<path d="M96 116 L136 76" stroke="#2a3733" stroke-width="4" fill="none"/>';
+  s+='<path d="M244 76 L284 116" stroke="#2a3733" stroke-width="4" fill="none"/>';
+  s+='<path d="M244 116 L284 156" stroke="#2a3733" stroke-width="4" fill="none"/>';
+
+  /* cantons occupés */
+  var seg={ouest:[0,96,36],aig1:[96,150,76],aig2:[244,300,116],
+           q1:[300,376,36],q2:[300,376,76],q3:[300,376,116],gar:[300,376,156]};
+  Object.keys(G.cantons).forEach(function(c){
+    var v=seg[c]; if(!v)return;
+    s+='<line x1="'+v[0]+'" y1="'+v[2]+'" x2="'+v[1]+'" y2="'+v[2]+'" stroke="#37e07d" stroke-width="4"/>';
+  });
+
+  /* quais */
+  var labs=[["QUAI 1",36],["QUAI 2",76],["QUAI 3",116],["GARAGE",156]];
+  labs.forEach(function(l){
+    var pris=Object.keys(G.cantons).some(function(c){
+      return (c==="q1"&&l[1]===36)||(c==="q2"&&l[1]===76)||(c==="q3"&&l[1]===116)||(c==="gar"&&l[1]===156);});
+    s+='<rect x="300" y="'+(l[1]-12)+'" width="76" height="24" fill="none" stroke="'
+      +(pris?"#37e07d":"#33403c")+'"/>';
+    s+='<text x="338" y="'+(l[1]+4)+'" font-family="Oswald" font-size="11" fill="'
+      +(pris?"#37e07d":"#7e918a")+'" text-anchor="middle" letter-spacing="1">'+l[0]+"</text>";
+  });
+
+  /* trains */
+  G.trains.forEach(function(t){
+    if(t.sorti)return;
+    var y=t.dest?t.dest.y:(t.voie?116:36);
+    var x=Math.min(370,t.x*1.15);
+    if(t.etat==="approche"||t.etat==="signal") x=Math.min(92,t.x*.9);
+    var col=TYPES[t.type].couleur;
+    if(t.etat==="signal") col="#ffb52e";
+    s+='<rect x="'+x.toFixed(0)+'" y="'+(y-8)+'" width="34" height="16" fill="'+col+'"'
+      +(G.sel===t.num?' stroke="#37e07d" stroke-width="2"':"")+'/>';
+    s+='<text x="'+(x+17).toFixed(0)+'" y="'+(y+4)+'" font-family="IBM Plex Mono" font-size="10" fill="#0c0e0d" text-anchor="middle">'+t.num+"</text>";
+  });
+
+  /* signaux d'entrée */
+  s+='<circle cx="100" cy="20" r="5" fill="'+(G.bloques?"#ff4d43":"#37e07d")+'"/>';
+  s+='<text x="4" y="192" font-family="IBM Plex Mono" font-size="9" fill="#7e918a">ENTRÉE OUEST</text>';
+  s+='<text x="376" y="192" font-family="IBM Plex Mono" font-size="9" fill="#7e918a" text-anchor="end">QUAIS ET GARAGE</text>';
+  return s+"</svg>";
+}
+
+function rend(){
+  var h=Math.floor(G.horloge/60), m=Math.floor(G.horloge%60);
+  $("#horloge").textContent=(h<10?"0":"")+h+":"+(m<10?"0":"")+m;
+  $("#service").textContent="SERVICE "+G.service+" · CADENCE "+(G.service>2?"SOUTENUE":"NORMALE");
+  $("#retard").textContent=G.retard+"'";
+  $("#retard").className=G.retard>12?"ko":G.retard>5?"":"ok";
+  $("#passes").textContent=G.passes;
+  $("#plan").innerHTML=planSVG();
+
+  var actifs=G.trains.filter(function(t){return !t.sorti;});
+  $("#nbtrains").textContent=actifs.length+" en ligne";
+  var z=$("#trains"); z.innerHTML="";
+  if(!actifs.length) z.innerHTML='<div class="vide">Aucun mouvement. Ça ne va pas durer.</div>';
+  actifs.forEach(function(t){
+    var el=document.createElement("div");
+    var urgent=(t.etat==="signal"&&t.attente>6)||(t.type==="direct"&&!t.dest);
+    el.className="tr"+(G.sel===t.num?" sel":"")+(urgent?" urgent":"");
+    var etat=t.etat==="approche"?"en approche"
+      :t.etat==="signal"?("au signal · "+Math.floor(t.attente/4)+"' de retard")
+      :t.etat==="engage"?"en manœuvre"
+      :t.etat==="quai"?"à quai":"en sortie";
+    var cls=t.etat==="signal"?"r":(t.dest?"v":"");
+    el.innerHTML='<span class="no">'+t.num+"</span>"
+      +'<span class="de">'+TYPES[t.type].lib+" "+t.ville
+      +"<small>"+(t.dest?("→ "+t.dest.nom):"sans itinéraire")+"</small></span>"
+      +'<span class="et '+cls+'">'+etat+"</span>";
+    el.onclick=function(){ G.sel=(G.sel===t.num)?null:t.num; rend(); };
+    z.appendChild(el);
+  });
+
+  var sel=G.trains.filter(function(x){return x.num===G.sel;})[0];
+  $("#dtitre").textContent=sel?("Destination pour le "+sel.num+" — "+TYPES[sel.type].lib.toLowerCase()):"Destination — sélectionne un train";
+  var d=$("#dests"); d.innerHTML="";
+  DESTS.forEach(function(dd){
+    var compatible=sel&&dd.type.indexOf(sel.type)>=0;
+    var dispo=libre(dd.cantons);
+    var el=document.createElement("button");
+    el.className="bt"+(!dispo?" occupe":"");
+    el.disabled=!sel||!compatible||!dispo||G.fini;
+    el.innerHTML="<b>"+dd.nom+"</b>"+(dispo?dd.cantons.length+" cantons":"occupé");
+    el.onclick=function(){ assigner(dd.id); };
+    d.appendChild(el);
+  });
+
+  var msg=$("#msg");
+  msg.className="msg"+(G.msgType?" "+G.msgType:"");
+  msg.innerHTML=G.fini?("<b>"+G.msg+"</b> "+G.passes+" trains passés, "+G.retard+" minutes de retard."):G.msg;
+
+  $("#score").innerHTML='<div><b>'+G.retard+"'</b><span>RETARD CUMULÉ</span></div>"
+    +'<div><b>'+G.passes+"</b><span>TRAINS PASSÉS</span></div>"
+    +'<div><b>'+G.bloques+"</b><span>AU SIGNAL</span></div>";
+  $("#pause").textContent=G.fini?"Service interrompu":(G.pause?"Reprendre":"Pause");
+  $("#pause").disabled=G.fini;
+}
+
+$("#pause").onclick=function(){ if(!G.fini){G.pause=!G.pause;rend();} };
+$("#rejouer").onclick=nouveauService;
+$("#aide").onclick=function(){ G.pause=true; $("#modal").classList.add("on"); rend(); };
+$("#fermer").onclick=function(){ $("#modal").classList.remove("on"); G.pause=false; rend(); };
+
+nouveauService();
+setInterval(tick,120);
+</script>
+</body>
+</html>
